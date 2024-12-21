@@ -1,0 +1,307 @@
+///< C++ 模板
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// 常量定义
+#define INF 1e9
+#define MOD 1000000007
+#define PI 3.14159265358979323846
+#define EPS 1e-9
+#define ALL(x) (x).begin(), (x).end()
+#define F first
+#define S second
+#define PB push_back
+#define MP make_pair
+#define endl "\n"
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int, int> pii;
+typedef pair<long long, long long> pll;
+typedef vector<int> vi;
+typedef vector<ll> vl;
+typedef vector<pii> vpi;
+typedef vector<pll> vpl;
+typedef vector<vector<int>> vvi;
+typedef vector<vector<ll>> vvll;
+typedef vector<string> vs;
+typedef vector<char> vc;
+typedef unordered_map<int, int> umap;
+
+// 快速输入输出
+inline void fast_input_output() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+}
+
+// 输出容器内容，适配各种容器
+template <typename T>
+void print_container(const vector<T>& container) {
+    for (const auto& x : container) {
+        cout << x << " ";
+    }
+    cout << endl;
+}
+
+// 读取数组，适配各种容器
+template <typename T>
+void read_array(vector<T>& arr, int n) {
+    arr.resize(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> arr[i];
+    }
+}
+
+// 判断一个数是否为质数
+bool is_prime(int x) {
+    if (x <= 1) return false;
+    for (int i = 2; i * i <= x; ++i) {
+        if (x % i == 0) return false;
+    }
+    return true;
+}
+
+// 求最大公约数 GCD
+ll gcd(ll a, ll b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+
+// 求最小公倍数 LCM
+ll lcm(ll a, ll b) {
+    return a / gcd(a, b) * b;
+}
+
+// 快速幂：计算 a^b % mod
+ll power(ll a, ll b, ll mod = MOD) {
+    ll result = 1;
+    while (b > 0) {
+        if (b % 2 == 1) {
+            result = (result * a) % mod;
+        }
+        a = (a * a) % mod;
+        b /= 2;
+    }
+    return result;
+}
+
+// 快读
+template <typename T>
+void read_vector(vector<T>& vec) {
+    for (T& val : vec) {
+        cin >> val;
+    }
+}
+
+// 二分查找（查找 >= target 的最小位置）
+int lower_bound_index(const vector<int>& arr, int target) {
+    return lower_bound(ALL(arr), target) - arr.begin();
+}
+
+// 二分查找（查找 > target 的最小位置）
+int upper_bound_index(const vector<int>& arr, int target) {
+    return upper_bound(ALL(arr), target) - arr.begin();
+}
+
+// 返回数组的前缀和
+vector<ll> prefix_sum(const vector<ll>& arr) {
+    vector<ll> prefix(arr.size() + 1, 0);
+    for (size_t i = 0; i < arr.size(); ++i) {
+        prefix[i + 1] = prefix[i] + arr[i];
+    }
+    return prefix;
+}
+
+// 返回子数组的和，使用前缀和优化
+ll range_sum(const vector<ll>& prefix, int l, int r) {
+    return prefix[r + 1] - prefix[l];
+}
+
+// 计算二进制中 1 的个数
+int count_bits(int x) {
+    return __builtin_popcount(x);
+}
+
+// 判断一个数是否是完全平方数
+bool is_perfect_square(ll x) {
+    ll sq = sqrt(x);
+    return sq * sq == x;
+}
+
+// 判断是否为回文数
+bool is_palindrome(const string& s) {
+    int n = s.size();
+    for (int i = 0; i < n / 2; ++i) {
+        if (s[i] != s[n - 1 - i]) return false;
+    }
+    return true;
+}
+
+// 扩展欧几里得算法，求 ax + by = gcd(a, b) 的解
+pll extended_gcd(ll a, ll b) {
+    if (b == 0) return {1, 0};
+    pll res = extended_gcd(b, a % b);
+    return {res.second, res.first - (a / b) * res.second};
+}
+
+// 判断是否是一个完美数（完全数）
+bool is_perfect_number(int num) {
+    int sum = 1;
+    for (int i = 2; i * i <= num; ++i) {
+        if (num % i == 0) {
+            sum += i;
+            if (i != num / i) sum += num / i;
+        }
+    }
+    return sum == num;
+}
+
+// 计算逆元（modular inverse），使用扩展欧几里得
+ll mod_inverse(ll a, ll m = MOD) {
+    ll x, y;
+    ll g = extended_gcd(a, m).first;
+    if (g != 1) return -1; // 无法求逆
+    return (x + m) % m;  // 返回逆元
+}
+
+// 返回给定数的素因数分解
+vector<ll> prime_factors(ll n) {
+    vector<ll> factors;
+    for (ll i = 2; i * i <= n; ++i) {
+        while (n % i == 0) {
+            factors.push_back(i);
+            n /= i;
+        }
+    }
+    if (n > 1) factors.push_back(n);
+    return factors;
+}
+
+// 树的深度优先搜索 DFS
+void dfs(int node, const vector<vector<int>>& adj, vector<bool>& visited) {
+    visited[node] = true;
+    // 处理当前节点
+    for (int neighbor : adj[node]) {
+        if (!visited[neighbor]) {
+            dfs(neighbor, adj, visited);
+        }
+    }
+}
+
+// 树的广度优先搜索 BFS
+void bfs(int start, const vector<vector<int>>& adj, vector<int>& dist) {
+    queue<int> q;
+    dist[start] = 0;
+    q.push(start);
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        for (int neighbor : adj[node]) {
+            if (dist[neighbor] == -1) {  // 未访问
+                dist[neighbor] = dist[node] + 1;
+                q.push(neighbor);
+            }
+        }
+    }
+}
+
+// 最短路径：Dijkstra 算法
+void dijkstra(int start, const vector<vector<pii>>& graph, vector<int>& dist) {
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    dist[start] = 0;
+    pq.push({0, start});
+    while (!pq.empty()) {
+        int d = pq.top().first, u = pq.top().second;
+        pq.pop();
+        if (d > dist[u]) continue;
+        for (auto& edge : graph[u]) {
+            int v = edge.first, w = edge.second;
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+}
+
+// 并查集（Union-Find）结构
+struct UnionFind {
+    vector<int> parent, size;
+    UnionFind(int n) {
+        parent.resize(n);
+        size.assign(n, 1);
+        iota(parent.begin(), parent.end(), 0);
+    }
+    int find(int x) {
+        return parent[x] == x ? x : parent[x] = find(parent[x]);
+    }
+    void unite(int x, int y) {
+        int rootX = find(x), rootY = find(y);
+        if (rootX != rootY) {
+            if (size[rootX] < size[rootY]) swap(rootX, rootY);
+            parent[rootY] = rootX;
+            size[rootX] += size[rootY];
+        }
+    }
+};
+
+// 动态规划：0/1 背包问题
+int knapsack(int W, const vector<int>& weight, const vector<int>& value, int n) {
+    vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));
+    for (int i = 1; i <= n; ++i) {
+        for (int w = 0; w <= W; ++w) {
+            if (weight[i - 1] <= w) {
+                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weight[i - 1]] + value[i - 1]);
+            } else {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+    return dp[n][W];
+}
+
+// 线段树（用于区间查询和更新）
+struct SegmentTree {
+    vector<ll> tree, arr;
+    int n;
+
+    SegmentTree(const vector<ll>& arr) {
+        this->arr = arr;
+        n = arr.size();
+        tree.resize(4 * n);
+        build(0, 0, n - 1);
+    }
+
+    void build(int node, int l, int r) {
+        if (l == r) {
+            tree[node] = arr[l];
+        } else {
+            int mid = (l + r) / 2;
+            build(2 * node + 1, l, mid);
+            build(2 * node + 2, mid + 1, r);
+            tree[node] = tree[2 * node + 1] + tree[2 * node + 2]; // 区间求和
+        }
+    }
+
+    void update(int idx, ll val, int node = 0, int l = 0, int r = -1) {
+        if (r == -1) r = n - 1;
+        if (l == r) {
+            arr[idx] = val;
+            tree[node] = val;
+        } else {
+            int mid = (l + r) / 2;
+            if (idx <= mid) update(idx, val, 2 * node + 1, l, mid);
+            else update(idx, val, 2 * node + 2, mid + 1, r);
+            tree[node] = tree[2 * node + 1] + tree[2 * node + 2];
+        }
+    }
+
+    ll query(int ql, int qr, int node = 0, int l = 0, int r = -1) {
+        if (r == -1) r = n - 1;
+        if (ql > r || qr < l) return 0; // 无交集
+        if (ql <= l && r <= qr) return tree[node]; // 完全覆盖
+        int mid = (l + r) / 2;
+        return query(ql, qr, 2 * node + 1, l, mid) + query(ql, qr, 2 * node + 2, mid + 1, r);
+    }
+};
